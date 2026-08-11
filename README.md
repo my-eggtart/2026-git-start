@@ -8,9 +8,7 @@ GitHub 웹에서 추가한 내용입니다.
 # 작업자 A·B의 Fetch, Merge 및 충돌 해결 — 시퀀스 다이어그램
 
 ​
-    participant A as 작업자 A
-    participant G as GitHub origin main
-    participant B as 작업자 B
+    
 
     Note over A,B: 0. 사전 준비 - 두 로컬 저장소 상태 동기화 및 커밋 작성자 설정
 
