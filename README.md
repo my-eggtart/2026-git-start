@@ -7,11 +7,7 @@ GitHub 웹에서 추가한 내용입니다.
 
 
 
-오늘의 학습 목표: 작업자 A·B의 Git 협업 및 Merge 충돌 해결
-
-# 작업자 A·B의 Fetch, Merge 및 충돌 해결 — 시퀀스 다이어그램
-
-​작업자 A·B의 Fetch, Merge 및 충돌 해결 — 시퀀스 다이어그램
+작업자 A·B의 Fetch, Merge 및 충돌 해결 — 시퀀스 다이어그램
 작업자 B
 GitHub origin main
 작업자 A
