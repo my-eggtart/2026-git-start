@@ -9,56 +9,100 @@ GitHub 웹에서 추가한 내용입니다.
 
 ​
     
+```mermaid
+sequenceDiagram
+    participant G as GitHub 원격 저장소
+    participant A as 작업자 A 로컬
+    participant B as 작업자 B 로컬
 
-   
+    Note over G,B: 1. 작업 환경 준비
 
-    rect rgb(240, 248, 255)
-    Note over A,B: 1차 실습 - 충돌 없는 협업
-    A->>A: worker-a.md 생성
-    A->>G: git add commit push
+    G->>A: git clone
+    G->>B: git clone
+
+    Note over A: 독립된 로컬 main
+    Note over B: 독립된 로컬 main
+
+    Note over G,B: 2. 충돌 없는 협업
+
+    A->>A: worker-a.md 작성
+    A->>A: git add
+    A->>A: git commit
+    A->>G: git push
+
+    Note over B: A의 변경은 아직 없음
+
     B->>G: git fetch origin
-    G-->>B: origin main 갱신 정보 전달
-    B->>B: git merge origin main (worker-a.md 반영)
-    B->>B: worker-b.md 생성
-    B->>G: git add commit push
-    A->>G: git fetch origin
-    G-->>A: origin main 갱신 정보 전달
-    A->>A: git merge origin main (worker-b.md 반영)
-    end
+    G-->>B: origin/main 최신 정보 전달
+    B->>B: git merge origin/main
 
-    rect rgb(255, 245, 238)
-    Note over A,B: 2차 실습 - 같은 파일 수정으로 충돌 발생
-    A->>A: README.md에 공통 문장 추가
-    A->>G: git add commit push
-    B->>G: git fetch origin
-    B->>B: git merge origin main (공통 문장 반영)
+    Note over B: worker-a.md 반영
 
-    Note over A: README.md 같은 문장 수정
-    A->>G: git add commit push (선반영 성공)
-
-    Note over B: README.md 같은 문장을 다르게 수정 (fetch 전)
-    B->>B: git add commit
+    B->>B: worker-b.md 작성
+    B->>B: git add
+    B->>B: git commit
     B->>G: git push
-    G-->>B: rejected fetch first (브랜치 diverged)
+
+    A->>G: git fetch origin
+    G-->>A: origin/main 최신 정보 전달
+    A->>A: git merge origin/main
+
+    Note over A,B: A와 B 모두 최신 상태
+
+    Note over G,B: 3. 충돌 발생 준비
+
+    A->>A: README.md 같은 문장 수정
+    A->>A: git add
+    A->>A: git commit
+    A->>G: git push
+
+    Note over G: origin/main에 A 변경 반영
+
+    B->>B: 같은 README.md 문장을<br/>A와 다르게 수정
+    B->>B: git add
+    B->>B: git commit
+
+    B->>G: git push
+    G--xB: Push 거절<br/>(fetch first)
+
+    Note over B,G: 원격에는 B가 가지고 있지 않은<br/>A의 커밋이 존재함
+
+    Note over G,B: 4. 원격 변경 확인
 
     B->>G: git fetch origin
-    G-->>B: origin main 최신 커밋 전달
-    B->>B: git merge origin main
-    Note over B: CONFLICT content README.md
-    B->>B: 충돌 표시 확인 후 해결
+    G-->>B: A의 커밋 정보 가져오기
+
+    Note over B: local main = B 변경<br/>origin/main = A 변경
+
+    B->>B: git merge origin/main
+
+    Note over B: README.md Merge Conflict 발생<br/>main|MERGING
+
+    Note over G,B: 5. 충돌 해결
+
+    B->>B: README.md 충돌 내용 확인
+
+    Note over B: <<<<<<< HEAD<br/>B의 내용<br/>=======<br/>A의 내용<br/>>>>>>>> origin/main
+
+    B->>B: A와 B의 내용을 검토
+    B->>B: 최종 내용 직접 작성
+    B->>B: 충돌 표시 삭제
+
     B->>B: git add README.md
-    B->>B: git commit (Merge Commit 생성)
+    Note over B: 충돌 해결 완료 표시
+
+    B->>B: git commit
+    Note over B: Merge Commit 생성
+
     B->>G: git push
-    G-->>G: origin main에 충돌 해결 결과 반영
+    Note over G: 충돌 해결된 최종 결과 반영
+
+    Note over G,B: 6. 다른 작업자 동기화
 
     A->>G: git fetch origin
-    G-->>A: 작업자 B의 Merge 커밋 전달
-    A->>A: git merge origin main (최종 결과 반영)
-    end
+    G-->>A: Merge Commit 정보 가져오기
 
+    A->>A: git merge origin/main
 
-## 참고: 핵심 흐름 요약
-- 다른 작업자의 변경은 git fetch 후 git merge를 실행해야만 로컬에 반영된다.
-- 같은 파일 같은 줄을 서로 다르게 수정하면 git merge 시 충돌(CONFLICT)이 발생한다.
-- 충돌은 먼저 push가 거절된 쪽(merge를 수행하는 작업자)의 로컬 저장소에서 해결된다.
-- 충돌 해결 순서: 충돌 표시 삭제 → git add → git commit(Merge Commit) → git push.
+    Note over G,B: GitHub / 작업자 A / 작업자 B<br/>모두 같은 최신 커밋 상태
+```
