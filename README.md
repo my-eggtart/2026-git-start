@@ -11,7 +11,7 @@ GitHub 웹에서 추가한 내용입니다.
 
 # 작업자 A·B의 Fetch, Merge 및 충돌 해결 — 시퀀스 다이어그램
 
-```mermaid
+​```mermaid
 sequenceDiagram
     participant A as 작업자 A
     participant G as GitHub origin main
@@ -64,7 +64,7 @@ sequenceDiagram
     end
 
     Note over A,B: 최종적으로 작업자 A와 작업자 B와 GitHub가 동일한 최신 커밋 상태로 동기화됨
-```
+​```
 
 ## 참고: 핵심 흐름 요약
 - 다른 작업자의 변경은 git fetch 후 git merge를 실행해야만 로컬에 반영된다.
