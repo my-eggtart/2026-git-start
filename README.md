@@ -7,8 +7,7 @@ GitHub 웹에서 추가한 내용입니다.
 
 # 작업자 A·B의 Fetch, Merge 및 충돌 해결 — 시퀀스 다이어그램
 
-​```mermaid
-sequenceDiagram
+​
     participant A as 작업자 A
     participant G as GitHub origin main
     participant B as 작업자 B
