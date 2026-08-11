@@ -10,7 +10,7 @@ GitHub 웹에서 추가한 내용입니다.
 ​
     
 
-    Note over A,B: 0. 사전 준비 - 두 로컬 저장소 상태 동기화 및 커밋 작성자 설정
+   
 
     rect rgb(240, 248, 255)
     Note over A,B: 1차 실습 - 충돌 없는 협업
@@ -56,8 +56,6 @@ GitHub 웹에서 추가한 내용입니다.
     A->>A: git merge origin main (최종 결과 반영)
     end
 
-    Note over A,B: 최종적으로 작업자 A와 작업자 B와 GitHub가 동일한 최신 커밋 상태로 동기화됨
-​```
 
 ## 참고: 핵심 흐름 요약
 - 다른 작업자의 변경은 git fetch 후 git merge를 실행해야만 로컬에 반영된다.
