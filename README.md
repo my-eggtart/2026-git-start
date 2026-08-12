@@ -22,8 +22,7 @@ GitHub 웹에서 추가한 내용입니다.
 
 ## 🔄 작업 및 충돌 해결 흐름 (Sequence Diagram)
 
-작업자 A(GitHub 웹)와 작업자 B(로컬 개발자)가 동일 파일의 같은 위치를 동시에 수정하여 충돌을 발생시키고 해결하는 과정입니다.
-
+```mermaid
 sequenceDiagram
     autonumber
     actor A as 작업자 A (GitHub 웹)
@@ -42,19 +41,19 @@ sequenceDiagram
         B->>B: README.md 같은 위치를 다르게 수정
         B->>B: git add & git commit
         B->>G: git push 시도
-        G-->>B: ❌ Push 거절 (fetch first)
+        G-->>B: Push 거절 (fetch first)
     end
 
     rect rgb(245, 255, 250)
         Note over B,G: 3. 원격 변경사항 가져오기 및 충돌 해결
         B->>G: git fetch origin (원격 이력 가져오기)
         B->>B: git merge origin/main
-        Note over B: ⚠️ README.md 충돌 발생!
+        Note over B: Merge Conflict 발생!
         B->>B: 충돌 내용 직접 수정 (Both Changes)
         B->>B: git add README.md
         B->>B: git commit -m "README 충돌 해결"
         B->>G: git push
-        G-->>B: ✅ Push 성공!
+        G-->>B: Push 성공!
     end
 
     rect rgb(240, 248, 255)
