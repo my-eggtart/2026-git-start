@@ -24,75 +24,40 @@ GitHub 웹에서 추가한 내용입니다.
 
 작업자 A(GitHub 웹)와 작업자 B(로컬 개발자)가 동일 파일의 같은 위치를 동시에 수정하여 충돌을 발생시키고 해결하는 과정입니다.
 
-```mermaid
 sequenceDiagram
     autonumber
-    actor Web as GitHub 웹 (작업자 A)
-    participant Remote as GitHub 원격 저장소 (origin/main)
-    participant Local as 로컬 컴퓨터 (main)
-    actor LocalUser as 로컬 작업자 (작업자 B)
+    actor A as 작업자 A (GitHub 웹)
+    participant G as GitHub 원격 저장소 (origin/main)
+    actor B as 작업자 B (로컬 컴퓨터)
 
-    LocalUser->>Remote: 1. git clone
-    Web->>Remote: 2. README.md 수정 & Commit
-    LocalUser->>Local: 3. README.md 다르게 수정 & Commit
-    LocalUser->>Remote: 4. git push 시도
-    Remote-->>LocalUser: ❌ Push 거절 (Non-fast-forward / Diverged)
-    
-    Note over Local,Remote: 원격 변경사항 가져오기 및 병합
-    LocalUser->>Remote: 5. git fetch origin
-    LocalUser->>Local: 6. git merge origin/main
-    Local-->>LocalUser: ⚠️ Merge Conflict 발생 (README.md)
-    
-    Note over LocalUser,Local: 충돌 해결 작업
-    LocalUser->>Local: 7. 충돌 표시 제거 및 내용 결정 (Both Changes 수용)
-    LocalUser->>Local: 8. git add README.md
-    LocalUser->>Local: 9. git commit -m "README 충돌 해결"
-    LocalUser->>Remote: 10. git push
-    Remote-->>LocalUser: ✅ Push 성공!
+    Note over A,B: 두 작업자 모두 동기화된 상태에서 시작
 
+    rect rgb(240, 248, 255)
+        Note over A,G: 1. GitHub 웹에서 먼저 수정
+        A->>G: README.md 수정 후 커밋 & 반영
+    end
 
+    rect rgb(255, 240, 245)
+        Note over B,G: 2. 로컬에서 동시 수정 후 Push 시도
+        B->>B: README.md 같은 위치를 다르게 수정
+        B->>B: git add & git commit
+        B->>G: git push 시도
+        G-->>B: ❌ Push 거절 (fetch first)
+    end
 
+    rect rgb(245, 255, 250)
+        Note over B,G: 3. 원격 변경사항 가져오기 및 충돌 해결
+        B->>G: git fetch origin (원격 이력 가져오기)
+        B->>B: git merge origin/main
+        Note over B: ⚠️ README.md 충돌 발생!
+        B->>B: 충돌 내용 직접 수정 (Both Changes)
+        B->>B: git add README.md
+        B->>B: git commit -m "README 충돌 해결"
+        B->>G: git push
+        G-->>B: ✅ Push 성공!
+    end
 
-    
-```mermaid
-sequenceDiagram
-    participant A as 작업자 A
-    participant G as GitHub
-    participant B as 작업자 B
-
-    Note over A,B: 두 작업자는 같은 최신 상태에서 시작
-
-    A->>A: README.md 수정
-    A->>A: git add + git commit
-    A->>G: git push
-
-    Note over G: A의 커밋이 origin/main에 반영됨
-
-    B->>B: README.md 같은 문장을 다르게 수정
-    B->>B: git add + git commit
-
-    B->>G: git push
-    G-->>B: Push 거절 (fetch first)
-
-    Note over B,G: B의 로컬에는 A의 최신 커밋이 없음
-
-    B->>G: git fetch origin
-    G-->>B: A의 최신 커밋 정보 전달
-
-    B->>B: git merge origin/main
-    Note over B: README.md 충돌 발생
-
-    B->>B: README.md 충돌 직접 해결
-    B->>B: git add README.md
-    B->>B: git commit (Merge Commit)
-
-    B->>G: git push
-
-    Note over G: 충돌 해결 결과가 origin/main에 반영됨
-
-    A->>G: git fetch origin
-    G-->>A: B의 Merge Commit 정보 전달
-    A->>A: git merge origin/main
-
-    Note over A,B: A / B / GitHub 모두 최신 상태
-```
+    rect rgb(240, 248, 255)
+        Note over A,G: 4. 작업자 A도 최신 상태로 동기화
+        A->>G: git fetch & git merge
+    end
